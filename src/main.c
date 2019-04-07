@@ -17,11 +17,12 @@ int main(int argc, char *argv[]){
 	
 	ier = init(sol);
 
-	ier = test_sin(sol);
+	ier = test_sin_setIC(sol);
 	//ier = print_sol(sol);
 
 	while(sol->t < 10){
 
+		ier = test_sin(sol);
 		ier = timestepping(sol);
 	}
 

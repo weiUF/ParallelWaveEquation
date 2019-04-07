@@ -23,11 +23,12 @@ int init(struct data *sol){
 	sol->rhs = (double *)malloc(sizeof(size));
 	sol->x = (double *)malloc(sizeof(size));
 	sol->y = (double *)malloc(sizeof(size));
+	sol->IC = (double *)malloc(sizeof(size));
 
 	int N = sol->nx * sol->ny;
 
 	int ix,iy;
-	double dx=(double)1/(nx+1),dy=(double)1/(ny+1);
+	double dx=(double)1/(nx-1),dy=(double)1/(ny-1);
 
 	// init grid, u, uold, rhs
 	for(int i=0;i<N; ++i){

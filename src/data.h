@@ -2,7 +2,7 @@
 struct data {
 	int nx, ny;
 	double t, told, dt;
-	double *u, *uold, *rhs, *x, *y;
+	double *u, *uold, *rhs, *x, *y, *IC;
 };
 
 

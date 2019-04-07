@@ -15,7 +15,7 @@ int timestepping(struct data *s){
 	
 	int nx,ny,N,i;
 	double t,dt;
-	double *unew=NULL;
+	double *unew;
 	nx = s->nx;
 	ny = s->ny;
 	N = nx*ny;
@@ -29,6 +29,7 @@ int timestepping(struct data *s){
 		}
 	}else{
 		//at the 1st step (need to use u' initial condtion)
+		unew[i] = 0.5*(dt * dt * s->rhs[i] + 2 * s->u[i] + 2*dt*s->IC[i]); //IC=ut(t=0)
 	}
 
 
