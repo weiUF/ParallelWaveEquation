@@ -22,7 +22,7 @@ int test_sin(struct data *s){
 	for(int i=0;i<N; ++i){
 		//s->u[i] = sin( t )*sin( s->x[i]) *sin(s->y[i] );
 		uxx = sin(t)*sin(s->y[i])*sin(s->x[i]) *(-1);
-		uxx = sin(t)*sin(s->y[i])*sin(s->x[i]) *(-1);
+		uyy = sin(t)*sin(s->y[i])*sin(s->x[i]) *(-1);
 		s->rhs[i] = uxx + uyy;
 	}
 

@@ -18,12 +18,12 @@ int init(struct data *sol){
 	sol->told = 0;
 	sol->dt = 0.0001;
 	int size = sizeof(double) * sol->nx * sol->ny;
-	sol->u = (double *)malloc(sizeof(size));
-	sol->uold = (double *)malloc(sizeof(size));
-	sol->rhs = (double *)malloc(sizeof(size));
-	sol->x = (double *)malloc(sizeof(size));
-	sol->y = (double *)malloc(sizeof(size));
-	sol->IC = (double *)malloc(sizeof(size));
+	sol->u = (double *)malloc(size);
+	sol->uold = (double *)malloc(size);
+	sol->rhs = (double *)malloc(size);
+	sol->x = (double *)malloc(size);
+	sol->y = (double *)malloc(size);
+	sol->IC = (double *)malloc(size);
 
 	int N = sol->nx * sol->ny;
 
@@ -32,13 +32,14 @@ int init(struct data *sol){
 
 	// init grid, u, uold, rhs
 	for(int i=0;i<N; ++i){
-		ix = i / (ny-1);
-		iy = i - (ny-1) * ix;
+		ix = i / nx;
+		iy = i - nx * ix;
 		sol->x[i] = ix * dx;
 		sol->y[i] = iy * dy;
 		sol->u[i] = 0;
 		sol->uold[i] = 0;
 		sol->rhs[i] = 0;
+		sol->IC[i] = 0;
 	}
 
 
