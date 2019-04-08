@@ -25,11 +25,11 @@ int timestepping(struct data *s){
 
 	if (t > 0){
 		for(i=0;i<N;++i){
-			unew[i] = dt * dt * s->rhs[i] + 2 * s->u[i] - s->uold[i];
+			unew[i] = s->rhs[i];
 		}
 	}else{
 		//at the 1st step (need to use u' initial condtion)
-		unew[i] = 0.5*(dt * dt * s->rhs[i] + 2 * s->u[i] + 2*dt*s->IC[i]); //IC=ut(t=0)
+		unew[i] = s->IC[i];//0.5*(dt * dt * s->rhs[i] + 2 * s->u[i] + 2*dt*s->IC[i]); //IC=ut(t=0)
 	}
 
 
