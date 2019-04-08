@@ -5,7 +5,7 @@
 
 /* 
  generate sine wave for testing purpose
- sin(x)sin(y)sin(t)
+ sin(1/sqrt(2)*(x-y)sin(t)
  */
 
 int test_sin(struct data *s){
@@ -20,9 +20,8 @@ int test_sin(struct data *s){
 
 	//calculate u, rhs
 	for(int i=0;i<N; ++i){
-		//s->u[i] = sin( t )*sin( s->x[i]) *sin(s->y[i] );
-		uxx = sin(t)*sin(s->y[i])*sin(s->x[i]) *(-1);
-		uyy = sin(t)*sin(s->y[i])*sin(s->x[i]) *(-1);
+		uxx = -0.5*sin(t)*sin( 1/sqrt(2) *( s->x[i] - s->y[i] ));
+		uyy = -0.5*sin(t)*sin( 1/sqrt(2) *( s->x[i] - s->y[i] ));
 		s->rhs[i] = uxx + uyy;
 	}
 
@@ -43,7 +42,7 @@ int test_sin_setIC(struct data *s){
 
 	//calculate u, rhs
 	for(int i=0;i<N; ++i){
-		s->IC[i] = cos( t )*sin( s->x[i]) *sin(s->y[i] );
+		s->IC[i] = cos( t )*sin( 1/sqrt(2) *( s->x[i] - s->y[i] ));
 	}
 
 

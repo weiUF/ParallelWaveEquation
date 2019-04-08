@@ -5,9 +5,10 @@ int print_sol(struct data *s){
 	
 	int idx,i,j;
 
-	printf("%s\n","dimension");
+	printf("dimension\n");
 	printf("nx: %d ", s->nx);
 	printf("ny: %d\n", s->ny);
+	printf("current time: %f\n", s->t);
 
 	printf("%s\n","solution u:");
 	for (i=0;i<s->nx;++i){
