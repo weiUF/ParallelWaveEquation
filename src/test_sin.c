@@ -32,10 +32,10 @@ int test_sin(struct data *s){
 		kk=(double)((i+1)%ny); //not to include last element of any row as this belong to last column, BC available 
 		if(jj!=0.0 && kk!=0) //update RHS only for not boundary condition points
 		{
-			if(t>dt)
+			if(t>=dt) //for second time-step onwards
 			s->rhs[i] = (2.*s->u[i]*la)-(s->uold[i])+sx*((s->u[i+ny])+(s->u[i-ny]))+sy*((s->u[i+1])+(s->u[i-1]));
-			if(t<=dt)
-			s->rhs[i] = (s->u[i]*la)-(dt*(s->IC[i]))+0.5*sx*((s->u[i+ny])+(s->u[i-ny]))+0.5*sy*((s->u[i+1])+(s->u[i-1]));			
+			if(t<dt) //for first time-step
+			s->rhs[i] = (s->u[i]*la)+(dt*(s->IC[i]))+0.5*sx*((s->u[i+ny])+(s->u[i-ny]))+0.5*sy*((s->u[i+1])+(s->u[i-1]));			
 		}
 
 	}
@@ -58,56 +58,6 @@ int test_sin_setIC(struct data *s){
 	//calculate u, rhs
 	for(int i=0;i<N; ++i){
 		s->IC[i] = cos( t )*sin( s->x[i]) *sin(s->y[i] );
-	}
-
-
-
-	return 0;
-}//#include <mpi.h>
-#include <stdio.h>
-#include <math.h>
-#include "data.h"
-
-/* 
- generate sine wave for testing purpose
- sin(1/sqrt(2)*(x-y)sin(t)
- */
-
-int test_sin(struct data *s){
-	
-	int nx,ny,N;
-	double t, uxx, uyy;
-	
-	t = s->t;
-	nx = s->nx;
-	ny = s->ny;
-	N = nx*ny;
-
-	//calculate u, rhs
-	for(int i=0;i<N; ++i){
-		uxx = -0.5*sin(t)*sin( 1/sqrt(2) *( s->x[i] - s->y[i] ));
-		uyy = -0.5*sin(t)*sin( 1/sqrt(2) *( s->x[i] - s->y[i] ));
-		s->rhs[i] = uxx + uyy;
-	}
-
-
-
-	return 0;
-}
-
-int test_sin_setIC(struct data *s){
-	
-	int nx,ny,N;
-	double t, uxx, uyy;
-	
-	t = s->t;
-	nx = s->nx;
-	ny = s->ny;
-	N = nx*ny;
-
-	//calculate u, rhs
-	for(int i=0;i<N; ++i){
-		s->IC[i] = cos( t )*sin( 1/sqrt(2) *( s->x[i] - s->y[i] ));
 	}
 
 
