@@ -29,23 +29,23 @@ int test_sin(struct data *s){
 	//send & receive data from adjacent region/processor
 	if(s->myrank != 0)
 	{MPI_Send(&(s->u[ny+2]), ny+2, MPI_DOUBLE, s->myrank-1, 0, MPI_COMM_WORLD);}
-	if(s->myrank != s->mpi_size)
+	if(s->myrank != s->mpi_size-1)
 	{MPI_Send(&(s->u[myN-2*(ny+2)]), ny+2, MPI_DOUBLE, s->myrank+1, 1, MPI_COMM_WORLD);}
 
 	if(s->myrank != 0)
 	{MPI_Recv(&(s->u[0]), ny+2, MPI_DOUBLE, s->myrank-1, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);}
-	if(s->myrank != s->mpi_size)
+	if(s->myrank != s->mpi_size-1)
 	{MPI_Recv(&(s->u[myN-ny]), ny+2, MPI_DOUBLE, s->myrank+1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);}
 
 
 
 	//calculate u, rhs
 	for(int i=0;i<myN; ++i){
-		ilocal = i + nx + 3 + i / ny * 2; // this index exclude ghosh & boundary points
+		ilocal = i + nx + 3 + i / ny * 2; // this index skips ghosh & boundary points
 		if(t>=dt) //for second time-step onwards
-		s->rhs[i] = (2.*s->u[i]*la)-(s->uold[i])+sx*((s->u[i+ny])+(s->u[i-ny]))+sy*((s->u[i+1])+(s->u[i-1]));
+		s->rhs[ilocal] = (2.*s->u[ilocal]*la)-(s->uold[ilocal])+sx*((s->u[ilocal+ny+2])+(s->u[ilocal-ny-2]))+sy*((s->u[ilocal+1])+(s->u[ilocal-1]));
 		if(t<dt) //for first time-step
-		s->rhs[i] = (s->u[i]*la)+(dt*(s->IC[i]))+0.5*sx*((s->u[i+ny])+(s->u[i-ny]))+0.5*sy*((s->u[i+1])+(s->u[i-1]));			
+		s->rhs[ilocal] = (s->u[ilocal]*la)+(dt*(s->IC[ilocal]))+0.5*sx*((s->u[ilocal+ny+2])+(s->u[ilocal-ny-2]))+0.5*sy*((s->u[ilocal+1])+(s->u[ilocal-1]));			
 
 	}
 
@@ -56,18 +56,18 @@ int test_sin(struct data *s){
 
 int test_sin_setIC(struct data *s){
 	
-	int nx,ny,N;
-	double t, uxx, uyy;
+	int nx,ny,N,ilocal;
+	double t,uxx,uyy,myN;
 	
 	t = s->t;
 	nx = s->nx;
 	ny = s->ny;
-	N = nx*ny;
+	myN = s->myN;
 
 	//calculate u, rhs
-	for(int i=0;i<N; ++i){
-		s->IC[i] = cos( t )*sin( s->x[i]) *sin(s->y[i] );
+	for(int i=0;i<myN; ++i){
+		ilocal = i + nx + 3 + i / ny * 2; // this index exclude ghosh & boundary points
+		s->u[ilocal] = cos( t )*sin( s->x[ilocal]) *sin(s->y[ilocal] );
 	}
-
 	return 0;
 }

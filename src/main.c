@@ -31,13 +31,17 @@ int main(int argc, char *argv[]){
 
 	ier = test_sin_setIC(sol);
 
-	while(sol->t < 2){
+	while(sol->t < 0.001){
+
+		printf("rank[%2d] time %f\n",sol->myrank, sol->t);
+		fflush(stdout);
 
 		ier = test_sin(sol);
 		ier = timestepping(sol);
+		ier = print_sol(sol);
 	}
 
-	ier = print_sol(sol);
+	//ier = print_sol(sol);
 	MPI_Finalize();
 
 	return 0;

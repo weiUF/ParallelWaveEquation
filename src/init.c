@@ -21,7 +21,7 @@ int init(struct data *sol){
 	N = nx * ny;
 	mynx = (nx + sol->mpi_size - 1) / sol->mpi_size;
 	istart = sol->myrank * mynx * ny;
-	if (sol->myrank == sol->mpi_size) {
+	if (sol->myrank == sol->mpi_size-1) {
 		mynx = nx % sol->mpi_size;
 		iend = N;
 	}
@@ -46,26 +46,37 @@ int init(struct data *sol){
 	if (sol->myrank == 0){
 		// BC
 		printf("\n Provide boundary condition at x=0\n");
+		fflush(stdout);
 		scanf("%lf", &bc_xl);
 		printf("\n Provide boundary condition at x=l\n");
+		fflush(stdout);
 		scanf("%lf", &bc_xr);
 		printf("\n Provide boundary condition at y=0\n");
+		fflush(stdout);
 		scanf("%lf", &bc_yb);
 		printf("\n Provide boundary condition at y=l\n");
+		fflush(stdout);
 		scanf("%lf", &bc_yt);
 		printf("\n Provide initialization condition \n");
+		fflush(stdout);
 		scanf("%lf", &initcond);
 	}
 
-	if (sol->myrank == 0){printf("Broadcasting BC to all mpi ranks...\n");}
+	if (sol->myrank == 0){
+		printf("Broadcasting BC to all mpi ranks...\n");
+		fflush(stdout);
+	}
 		//send to all processor
-		MPI_Bcast(&bc_xl,1,MPI_INT,0,MPI_COMM_WORLD);
-		MPI_Bcast(&bc_xr,1,MPI_INT,0,MPI_COMM_WORLD);
-		MPI_Bcast(&bc_yb,1,MPI_INT,0,MPI_COMM_WORLD);
-		MPI_Bcast(&bc_yt,1,MPI_INT,0,MPI_COMM_WORLD);
-		MPI_Bcast(&initcond,1,MPI_INT,0,MPI_COMM_WORLD);
+		MPI_Bcast(&bc_xl,1,MPI_DOUBLE,0,MPI_COMM_WORLD);
+		MPI_Bcast(&bc_xr,1,MPI_DOUBLE,0,MPI_COMM_WORLD);
+		MPI_Bcast(&bc_yb,1,MPI_DOUBLE,0,MPI_COMM_WORLD);
+		MPI_Bcast(&bc_yt,1,MPI_DOUBLE,0,MPI_COMM_WORLD);
+		MPI_Bcast(&initcond,1,MPI_DOUBLE,0,MPI_COMM_WORLD);
 
-	if (sol->myrank == 0){printf("done.\n");}
+	if (sol->myrank == 0){
+		printf("done.\n");
+		fflush(stdout);
+	}
 
 	// init grid, u, uold, rhs
 	for(int i=0;i<myN; ++i){
@@ -86,7 +97,7 @@ int init(struct data *sol){
 		for(int i=0;i<ny+2;++i)
 		{sol->u[i] = bc_xl; } //first nx elements of the array
 	}
-	if (sol->myrank == sol->mpi_size){
+	if (sol->myrank == sol->mpi_size-1){
 		//BC for right boundary xr
 		l_ar=myN-ny-2;
 		for(int i=l_ar;i<myN;++i)
