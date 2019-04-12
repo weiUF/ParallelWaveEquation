@@ -11,25 +11,26 @@ int init(struct data *sol){
 	
 	// init	
 	int nx=100, ny=100; // no. of internal points
+	int N, mynx, istart, iend, myN, size, ix, iy, l_ar; 
+	double initcond,bc_xl,bc_xr,bc_yb,bc_yt,dx,dy;
 	sol->nx = nx;
 	sol->ny = ny;
-	double initcond,bc_xl,bc_xr,bc_yb,bc_yt;
 	sol->t = 0;
 	sol->told = 0;
 	sol->dt = 0.0001;
-	int N = nx * ny;
-	int mynx = (nx + sol->mpi_size - 1) / sol->mpi_size;
-	int istart = sol->myrank * mynx * ny;
+	N = nx * ny;
+	mynx = (nx + sol->mpi_size - 1) / sol->mpi_size;
+	istart = sol->myrank * mynx * ny;
 	if (sol->myrank == sol->mpi_size) {
 		mynx = nx % sol->mpi_size;
 		iend = N;
 	}
-	int myN = mynx*ny; 
-	int iend = istart + myN;
+	myN = mynx*ny; 
+	iend = istart + myN;
 	sol->mynx = mynx;
 	sol->myN = myN;
 	// init local arrays
-	int size = sizeof(double) * (mynx+2)*(ny+2); // +2 for ghost points
+	size = sizeof(double) * (mynx+2)*(ny+2); // +2 for ghost points
 	sol->u = (double *)malloc(size);
 	sol->uold = (double *)malloc(size);
 	sol->rhs = (double *)malloc(size);
@@ -37,14 +38,12 @@ int init(struct data *sol){
 	sol->y = (double *)malloc(size);
 	sol->IC = (double *)malloc(size);
 
-
-	int ix,iy;
-	double dx=(double)1/(nx+1),dy=(double)1/(ny+1); // +2 for BC
-	double initcond,bc_xl,bc_xr,bc_yb,bc_yt;
+	dx=(double)1/(nx+1);
+	dy=(double)1/(ny+1); // +2 for BC
 
 	int iglobal,ilocal;
 
-	if (s->myrank == 0){
+	if (sol->myrank == 0){
 		// BC
 		printf("\n Provide boundary condition at x=0\n");
 		scanf("%lf", &bc_xl);
@@ -58,6 +57,7 @@ int init(struct data *sol){
 		scanf("%lf", &initcond);
 	}
 
+	if (sol->myrank == 0){printf("Broadcasting BC to all mpi ranks...\n");}
 		//send to all processor
 		MPI_Bcast(&bc_xl,1,MPI_INT,0,MPI_COMM_WORLD);
 		MPI_Bcast(&bc_xr,1,MPI_INT,0,MPI_COMM_WORLD);
@@ -65,26 +65,28 @@ int init(struct data *sol){
 		MPI_Bcast(&bc_yt,1,MPI_INT,0,MPI_COMM_WORLD);
 		MPI_Bcast(&initcond,1,MPI_INT,0,MPI_COMM_WORLD);
 
+	if (sol->myrank == 0){printf("done.\n");}
+
 	// init grid, u, uold, rhs
 	for(int i=0;i<myN; ++i){
-		ilocal = i + nx + 3 + i / ny * 2; // this index inlcude ghosh & boundary points
+		ilocal = i + nx + 3 + i / ny * 2; // this index exclude ghosh & boundary points
 		iglobal = i + istart;
 		ix = iglobal / ny;
 		iy = iglobal % ny;
-		s->x[ilocal] = (ix+1) * dx;
-		s->y[ilocal] = (iy+1) * dy;
+		sol->x[ilocal] = (ix+1) * dx;
+		sol->y[ilocal] = (iy+1) * dy;
 		sol->u[ilocal] = 0;
 		sol->uold[ilocal] = 0;
 		sol->rhs[ilocal] = 0;
 		sol->IC[ilocal] = initcond;
 	}
 
-	if (s->myrank == 0){
+	if (sol->myrank == 0){
 		//BC for left boundary xl
 		for(int i=0;i<ny+2;++i)
 		{sol->u[i] = bc_xl; } //first nx elements of the array
 	}
-	if (s->myrank == s->mpi_size){
+	if (sol->myrank == sol->mpi_size){
 		//BC for right boundary xr
 		l_ar=myN-ny-2;
 		for(int i=l_ar;i<myN;++i)

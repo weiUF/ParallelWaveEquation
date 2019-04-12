@@ -3,7 +3,8 @@ obj = $(src:.c=.o)
 dep = $(obj:.o=.d)  # one dependency file for each source
 
 LDFLAGS =-lm -g
-CPP = gcc
+CPP = mpicc
+CC = mpicc
 CFLAGS = -g
 
 wave: $(obj)
