@@ -13,6 +13,7 @@ int init(struct data *sol){
 	int nx=100, ny=100; // no. of internal points
 	sol->nx = nx;
 	sol->ny = ny;
+	double initcond,bc_xl,bc_xr,bc_yb,bc_yt;
 	sol->t = 0;
 	sol->told = 0;
 	sol->dt = 0.0001;
