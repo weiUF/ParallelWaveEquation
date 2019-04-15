@@ -33,8 +33,9 @@ int main(int argc, char *argv[]){
 
 	while(sol->t < 0.001){
 
-		printf("rank[%2d] time %f\n",sol->myrank, sol->t);
-		fflush(stdout);
+		if (sol->myrank == 0){
+			printf("time step %f\n", sol->t);
+			fflush(stdout);}
 
 		ier = test_sin(sol);
 		ier = timestepping(sol);

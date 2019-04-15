@@ -10,7 +10,7 @@
 
 int test_sin(struct data *s){
 	
-	int nx,ny,N,myN,ilocal;
+	int nx,ny,N,myN,ilocal,i;
 	double t, uxx, uyy,dt,dx,dy;
 	double jj,kk,sx,sy,la;
 	
@@ -18,7 +18,7 @@ int test_sin(struct data *s){
 	nx = s->nx;
 	ny = s->ny;
 	dt = s->dt;
-	N = nx*ny;
+	N = (s->nx+2)*(ny+2);
 	myN = s->myN;
 	dx=(double)1/(nx+1);
 	dy=(double)1/(ny+1);
@@ -27,20 +27,28 @@ int test_sin(struct data *s){
 	la=1-sx-sy;
 	
 	//send & receive data from adjacent region/processor
+	i = 0; // ix=0 points
+	ilocal = i + ny + 3 + i / ny * 2; // this index skips ghosh & boundary points
 	if(s->myrank != 0)
-	{MPI_Send(&(s->u[ny+2]), ny+2, MPI_DOUBLE, s->myrank-1, 0, MPI_COMM_WORLD);}
+	{MPI_Send(&(s->u[ilocal]), ny, MPI_DOUBLE, s->myrank-1, 0, MPI_COMM_WORLD);}
+	
+	i = myN-ny; // ix=mynx points
+	ilocal = i + ny + 3 + i / ny * 2; // this index skips ghosh & boundary points
 	if(s->myrank != s->mpi_size-1)
-	{MPI_Send(&(s->u[myN-2*(ny+2)]), ny+2, MPI_DOUBLE, s->myrank+1, 1, MPI_COMM_WORLD);}
+	{MPI_Send(&(s->u[ilocal]), ny, MPI_DOUBLE, s->myrank+1, 1, MPI_COMM_WORLD);}
 
-	if(s->myrank != 0)
-	{MPI_Recv(&(s->u[0]), ny+2, MPI_DOUBLE, s->myrank-1, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);}
+	if(s->myrank != 0) //ix=-1 ghost points
+	{MPI_Recv(&(s->u[1]), ny, MPI_DOUBLE, s->myrank-1, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);}
+
+	i = myN+1; // ix=mynx+1 ghost points
+	ilocal = i + ny + 3 + i / ny * 2; // this index skips ghosh & boundary points
 	if(s->myrank != s->mpi_size-1)
-	{MPI_Recv(&(s->u[myN-ny]), ny+2, MPI_DOUBLE, s->myrank+1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);}
+	{MPI_Recv(&(s->u[ilocal]), ny, MPI_DOUBLE, s->myrank+1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);}
 
 
 
 	//calculate u, rhs
-	for(int i=0;i<myN; ++i){
+	for(i=0;i<myN; ++i){
 		ilocal = i + ny + 3 + i / ny * 2; // this index skips ghosh & boundary points
 		//debug
 		if (ilocal >= (s->mynx+2)*(ny+2)){

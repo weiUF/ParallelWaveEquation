@@ -22,9 +22,13 @@ int init(struct data *sol){
 	mynx = (nx + sol->mpi_size - 1) / sol->mpi_size;
 	istart = sol->myrank * mynx * ny;
 	if (sol->myrank == sol->mpi_size-1) {
-		mynx = nx % sol->mpi_size;
+		mynx = nx - mynx * (sol->mpi_size - 1);
 		iend = N;
 	}
+	//debug 
+	//printf("rank[%d], mynx:%d\n",sol->myrank,mynx);
+	//fflush(stdout);
+	
 	myN = mynx*ny; 
 	iend = istart + myN;
 	sol->mynx = mynx;
@@ -104,7 +108,7 @@ int init(struct data *sol){
 		{sol->u[i] = bc_xr; } //last nx elements of the array
 	}
 	//BC for bottom and top boundary
-	for(int i=0;i<mynx;++i){
+	for(int i=0;i<mynx+2;++i){
 		//Every nx_th element represent first column element
 		sol->u[i*(ny+2)] = bc_yb;
 		//Every nx-1 element represent last column element
