@@ -1,4 +1,4 @@
-//#include <mpi.h>
+#include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "data.h"
@@ -13,15 +13,16 @@
 
 int timestepping(struct data *s){
 	
-	int nx,ny,N,i;
+	int nx,ny,N,i,size;
 	double t,dt;
 	double *unew;
 	nx = s->nx;
 	ny = s->ny;
-	N = nx*ny;
+	N = (s->mynx+2)*(ny+2);
 	t = s->t;
 	dt = s->dt;
-	unew = (double*)malloc(N*sizeof(double));
+	size = sizeof(double)*N;
+	unew = (double*)malloc(size);
 
 	//if (t > 0){
 		for(i=0;i<N;++i){

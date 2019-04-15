@@ -11,7 +11,7 @@ int print_sol(struct data *s){
 	printf("current time: %f\n", s->t);
 
 	printf("%s\n","solution u:");
-	for (i=0;i<s->nx+2;++i){
+	for (i=0;i<s->mynx+2;++i){
 		for (j=0;j<s->ny+2;++j){
 			idx = i * (s->ny+2) + j;
 			printf("%6f ", s->u[idx]);

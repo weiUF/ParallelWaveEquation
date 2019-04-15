@@ -38,10 +38,10 @@ int main(int argc, char *argv[]){
 
 		ier = test_sin(sol);
 		ier = timestepping(sol);
-		ier = print_sol(sol);
+		//ier = print_sol(sol);
 	}
 
-	//ier = print_sol(sol);
+	ier = print_sol(sol);
 	MPI_Finalize();
 
 	return 0;

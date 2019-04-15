@@ -41,11 +41,16 @@ int test_sin(struct data *s){
 
 	//calculate u, rhs
 	for(int i=0;i<myN; ++i){
-		ilocal = i + nx + 3 + i / ny * 2; // this index skips ghosh & boundary points
+		ilocal = i + ny + 3 + i / ny * 2; // this index skips ghosh & boundary points
+		//debug
+		if (ilocal >= (s->mynx+2)*(ny+2)){
+			printf("idx: %d VS max: %d",ilocal, (s->mynx+2)*(ny+2));
+			fflush(stdout);}
 		if(t>=dt) //for second time-step onwards
 		s->rhs[ilocal] = (2.*s->u[ilocal]*la)-(s->uold[ilocal])+sx*((s->u[ilocal+ny+2])+(s->u[ilocal-ny-2]))+sy*((s->u[ilocal+1])+(s->u[ilocal-1]));
 		if(t<dt) //for first time-step
-		s->rhs[ilocal] = (s->u[ilocal]*la)+(dt*(s->IC[ilocal]))+0.5*sx*((s->u[ilocal+ny+2])+(s->u[ilocal-ny-2]))+0.5*sy*((s->u[ilocal+1])+(s->u[ilocal-1]));			
+		//s->rhs[ilocal] = (s->u[ilocal]*la)+(dt*(s->IC[ilocal]))+0.5*sx*((s->u[ilocal+ny+2])+(s->u[ilocal-ny-2]))+0.5*sy*((s->u[ilocal+1])+(s->u[ilocal-1]));			
+		s->rhs[ilocal] = (s->u[ilocal]*la)+0.5*sx*((s->u[ilocal+ny+2])+(s->u[ilocal-ny-2]))+0.5*sy*((s->u[ilocal+1])+(s->u[ilocal-1]));			
 
 	}
 
@@ -66,7 +71,7 @@ int test_sin_setIC(struct data *s){
 
 	//calculate u, rhs
 	for(int i=0;i<myN; ++i){
-		ilocal = i + nx + 3 + i / ny * 2; // this index exclude ghosh & boundary points
+		ilocal = i + ny + 3 + i / ny * 2; // this index exclude ghosh & boundary points
 		s->u[ilocal] = cos( t )*sin( s->x[ilocal]) *sin(s->y[ilocal] );
 	}
 	return 0;

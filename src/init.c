@@ -80,7 +80,7 @@ int init(struct data *sol){
 
 	// init grid, u, uold, rhs
 	for(int i=0;i<myN; ++i){
-		ilocal = i + nx + 3 + i / ny * 2; // this index exclude ghosh & boundary points
+		ilocal = i + ny + 3 + i / ny * 2; // this index exclude ghosh & boundary points
 		iglobal = i + istart;
 		ix = iglobal / ny;
 		iy = iglobal % ny;
