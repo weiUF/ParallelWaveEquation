@@ -27,8 +27,11 @@ int timestepping(struct data *s){
 		for(i=0;i<N;++i){
 			unew[i] = s->rhs[i];
 		}
+		
+		
+    //  BC and IC both defined in init.c
 	//}else{
-	//	//at the 1st step (need to use u' initial condtion)
+	//	//at the 1st step (need to use u' initial condtion)       
 	//	for(i=0;i<N;++i){
 	//		unew[i] = s->IC[i];//0.5*(dt * dt * s->rhs[i] + 2 * s->u[i] + 2*dt*s->IC[i]); //IC=ut(t=0)
 	//	}
