@@ -20,8 +20,8 @@ int test_sin(struct data *s){
 	dt = s->dt;
 	N = (s->nx+2)*(ny+2);
 	myN = s->myN;
-	dx=(double)1/(nx+1);
-	dy=(double)1/(ny+1);
+	dx=(double)(s->x_xl)/(nx+1);
+	dy=(double)(s->y_yl)/(ny+1);
 	sx=(dt*dt)/(dx*dx);
 	sy=(dt*dt)/(dy*dy);
 	la=1-sx-sy;

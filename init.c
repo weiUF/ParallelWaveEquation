@@ -81,6 +81,8 @@ int init(struct data *sol){
 	sol->dt = dt;
 	sol->total_t = total_t;
 	sol->file_sv_t = file_sv_t;
+	sol->x_xl=x_xl;
+	sol->y_yl=y_yl;
 	N = nx * ny;
 	// commented mynx = (nx + sol->mpi_size - 1) / sol->mpi_size;
 	mynx = nx / sol->mpi_size;
