@@ -14,7 +14,7 @@ int main(int argc, char *argv[]){
 	struct data *sol;
 
 	sol = (struct data*)malloc(sizeof(struct data));
-
+	int dt_int=0;
 	// Initialize the MPI environment
 	MPI_Init(&argc, &argv);
 
@@ -29,9 +29,15 @@ int main(int argc, char *argv[]){
 	int tf,tf_old=0;
 
 	ier = init(sol);
-	
-	//ier = test_sin_setIC(sol);
-
+	if (sol->myrank == 0){
+		printf("\n Whether to initialize system with pointwise data, Enter '0' for no and '1' for yes \n");
+		fflush(stdout);
+		scanf("%d", &dt_int);
+	}
+	MPI_Bcast(&dt_int,1,MPI_DOUBLE,0,MPI_COMM_WORLD);
+	if(dt_int==1)
+	ier = test_sin_setIC(sol);
+	MPI_Barrier(MPI_COMM_WORLD);
 	while(sol->t < sol->total_t){
 
 		if (sol->myrank == 0){
