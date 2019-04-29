@@ -81,6 +81,8 @@ int init(struct data *sol){
 	sol->dt = dt;
 	sol->total_t = total_t;
 	sol->file_sv_t = file_sv_t;
+	sol->x_xl=x_xl;
+	sol->y_yl=y_yl;
 	N = nx * ny;
 	// commented mynx = (nx + sol->mpi_size - 1) / sol->mpi_size;
 	mynx = nx / sol->mpi_size;
@@ -115,8 +117,8 @@ int init(struct data *sol){
 		fflush(stdout);
 	}
 
-	dx=(double)x_xl/(nx+1);
-	dy=(double)y_yl/(ny+1); // +2 for BC
+	dx=(double)x_xl/(nx-1);
+	dy=(double)y_yl/(ny-1); // as dx, dy matters for BC and internal grids 
 
 	if (sol->myrank == 0)
 	{ //implemented to avoid empty loop for one row
@@ -139,7 +141,7 @@ int init(struct data *sol){
 			sol->rhs[ilocal] = 0;
 			sol->IC[ilocal] = initcond;
 		}
-		sol->u[550] = 5;
+		//sol->u[550] = 5;
 
 
 	}
@@ -164,7 +166,7 @@ int init(struct data *sol){
 			sol->rhs[ilocal] = 0;
 			sol->IC[ilocal] = initcond;
 		}
-		sol->u[550] = 5;
+		//sol->u[550] = 5;
 
 
 	}
@@ -186,7 +188,7 @@ int init(struct data *sol){
 			sol->rhs[ilocal] = 0;
 			sol->IC[ilocal] = initcond;
 		}
-		sol->u[550] = 5;
+		//sol->u[550] = 5;
 
 	}
 
