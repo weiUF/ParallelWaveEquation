@@ -8,7 +8,7 @@ int print_sol(struct data *s){
     double time = s->t;
     char filename[300];
     
-    sprintf(filename, "Solution_U_at_t_%f_sec.txt", time);
+    sprintf(filename, "wave_ss_%5f.csv", time);
 
     FILE *out_file = fopen(filename, "w"); // write only 
 
@@ -27,16 +27,18 @@ int print_sol(struct data *s){
 	printf("%s\n","solution u:");
 	
 	*/
-    
+
+  //file header 
+	fprintf(out_file,"X,Y,U\n");	
+
 	for (i=0;i<s->nx;++i){
 		for (j=0;j<s->ny;++j){
 			idx = i * s->nx + j;
-            fprintf(out_file, "%f,",s->u[idx]); // write to file
+            fprintf(out_file, "%6f,%6f,%6f,\n",s->x[idx],s->y[idx],s->u[idx]); // write to file
 		}
-        fprintf(out_file, "\n"); // write to file
 	}
     
-    time = time + 0.001;
+    //time = time + 0.001;
     
 	return 0;
 }

@@ -1,7 +1,11 @@
 //#include <mpi.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #include "data.h"
+
+
+#define PI 3.1415927
 
 /*
 	initialize data structure and create grid points
@@ -35,7 +39,6 @@ int init(struct data *sol){
 	int ix,iy;
 	double dx=(double)1/(nx-1),dy=(double)1/(ny-1);
     
-    	printf("dx: %f ", dx);
  
         /* Manual Input has been toggled off for now to minimize time during test
 	printf("\n Provide boundary condition at x=0\n");
@@ -57,12 +60,14 @@ int init(struct data *sol){
 		iy = i - ny * ix;
 		sol->x[i] = ix * dx;
 		sol->y[i] = iy * dy;
-		sol->u[i] = 0;
+		//sol->u[i] = 0;
+		sol->u[i] = sin(sol->x[i]*PI)*sin(sol->y[i]*PI);
 		sol->uold[i] = 0;
 		sol->rhs[i] = 0;
+		sol->IC[i]=0;
 	}
 
-		sol->u[4949] = 1;      // Initial condition as a point source
+		//sol->u[4949] = 1;      // Initial condition as a point source
 
         
         

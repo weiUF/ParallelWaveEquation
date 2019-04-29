@@ -32,11 +32,11 @@ int test_sin(struct data *s){
 		kk=(double)((i+1)%ny); //not to include last element of any row as this belong to last column, BC available 
 		if(jj!=0.0 && kk!=0) //update RHS only for not boundary condition points
 		{
-			//if(t>=dt) //for second time-step onwards
+			if(t>=dt) //for second time-step onwards
 			s->rhs[i] = (2.*s->u[i]*la)-(s->uold[i])+sx*((s->u[i+ny])+(s->u[i-ny]))+sy*((s->u[i+1])+(s->u[i-1]));
-			//if(t<dt) //for first time-step
+			if(t<dt) //for first time-step
            // s->rhs[i] = (2.*s->u[i]*la)-(s->IC[i])+sx*((s->u[i+ny])+(s->u[i-ny]))+sy*((s->u[i+1])+(s->u[i-1]));
-			//s->rhs[i] = (s->u[i]*la)+(dt*(s->IC[i]))+0.5*sx*((s->u[i+ny])+(s->u[i-ny]))+0.5*sy*((s->u[i+1])+(s->u[i-1]));			
+			s->rhs[i] = (s->u[i]*la)+(dt*(s->IC[i]))+0.5*sx*((s->u[i+ny])+(s->u[i-ny]))+0.5*sy*((s->u[i+1])+(s->u[i-1]));			
 		}
 
 	}
