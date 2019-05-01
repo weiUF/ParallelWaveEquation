@@ -20,7 +20,7 @@ int main(int argc, char *argv[]){
 
 	//ier = test_sin_setIC(sol);
 
-	while(sol->t < 1){
+	while(sol->t < 0.5){
         
 		if(fmod(sol->t, 0.01) <= sol->dt)
 		{ier = print_sol(sol);}
